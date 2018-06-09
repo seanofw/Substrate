@@ -64,13 +64,15 @@ namespace Substrate.Entities
 
             _type = (CartType)ctree["Type"].ToTagInt().Data;
 
-            switch (_type) {
+			NbtVerificationResults verificationResults;
+
+			switch (_type) {
                 case CartType.EMPTY:
                     return this;
                 case CartType.CHEST:
-                    return new EntityMinecartChest().LoadTreeSafe(tree);
+                    return new EntityMinecartChest().LoadTreeSafe(tree, out verificationResults);
                 case CartType.FURNACE:
-                    return new EntityMinecartFurnace().LoadTreeSafe(tree);
+                    return new EntityMinecartFurnace().LoadTreeSafe(tree, out verificationResults);
                 default:
                     return this;
             }

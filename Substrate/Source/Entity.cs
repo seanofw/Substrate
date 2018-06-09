@@ -183,12 +183,10 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of an Entity subtree.</param>
         /// <returns>The <see cref="Entity"/> returns itself on success, or null if the tree failed validation.</returns>
-        public Entity LoadTreeSafe(TagNode tree)
+        public Entity LoadTreeSafe(TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree))
-            {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }
@@ -335,12 +333,10 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of an Entity subtree.</param>
         /// <returns>The <see cref="TypedEntity"/> returns itself on success, or null if the tree failed validation.</returns>
-        public virtual new TypedEntity LoadTreeSafe(TagNode tree)
+        public virtual new TypedEntity LoadTreeSafe(TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree))
-            {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }

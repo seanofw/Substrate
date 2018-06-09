@@ -155,7 +155,7 @@ namespace Substrate
         {
             AlphaChunk c = new AlphaChunk();
 
-            return c.LoadTreeSafe(tree.Root);
+            return c.LoadTreeSafe(tree.Root, out NbtVerificationResults verificationResults);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Substrate
             foreach (TagNodeCompound tag in _tileEntities) {
                 TileEntity te = TileEntityFactory.Create(tag);
                 if (te == null) {
-                    te = TileEntity.FromTreeSafe(tag);
+                    te = TileEntity.FromTreeSafe(tag, out NbtVerificationResults verificationResults);
                 }
 
                 if (te != null) {
@@ -201,7 +201,7 @@ namespace Substrate
             if (_tileTicks != null) {
                 List<TileTick> tileTicks = new List<TileTick>();
                 foreach (TagNodeCompound tag in _tileTicks) {
-                    TileTick tt = TileTick.FromTreeSafe(tag);
+                    TileTick tt = TileTick.FromTreeSafe(tag, out NbtVerificationResults verificationResults);
 
                     if (tt != null) {
                         tt.MoveBy(diffx, 0, diffz);
@@ -310,11 +310,10 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">Root node of an NBT tree.</param>
         /// <returns>A reference to the current Chunk, or null if the tree does not conform to the chunk's NBT Schema definition.</returns>
-        public AlphaChunk LoadTreeSafe (TagNode tree)
+        public AlphaChunk LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree)) {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }

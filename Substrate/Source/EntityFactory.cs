@@ -48,7 +48,7 @@ namespace Substrate
 
             TypedEntity te = Activator.CreateInstance(t) as TypedEntity;
 
-            return te.LoadTreeSafe(tree);
+            return te.LoadTreeSafe(tree, out NbtVerificationResults verificationResults);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Substrate
 
             TypedEntity te = new TypedEntity(type.ToTagString().Data);
 
-            return te.LoadTreeSafe(tree);
+            return te.LoadTreeSafe(tree, out NbtVerificationResults verificationResults);
         }
 
         /// <summary>

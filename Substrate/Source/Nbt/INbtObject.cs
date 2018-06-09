@@ -15,12 +15,13 @@ namespace Substrate.Nbt
         /// <returns>The object returns itself on success, or null if the tree was unparsable.</returns>
         T LoadTree (TagNode tree);
 
-        /// <summary>
-        /// Attempt to load an NBT tree into the object with validation.
-        /// </summary>
-        /// <param name="tree">The root node of an NBT tree.</param>
-        /// <returns>The object returns itself on success, or null if the tree failed validation.</returns>
-        T LoadTreeSafe (TagNode tree);
+		/// <summary>
+		/// Attempt to load an NBT tree into the object with validation.
+		/// </summary>
+		/// <param name="tree">The root node of an NBT tree.</param>
+		/// <param name="verificationResults">The full results from the validation tests (including error messages).</param>
+		/// <returns>The object returns itself on success, or null if the tree failed validation.</returns>
+		T LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults);
 
         /// <summary>
         /// Builds an NBT tree from the object's data.

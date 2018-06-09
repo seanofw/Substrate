@@ -137,11 +137,10 @@ namespace Substrate
             return this;
         }
 
-        public AnvilSection LoadTreeSafe (TagNode tree)
+        public AnvilSection LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree)) {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }

@@ -227,12 +227,10 @@ namespace Substrate
         }
 
         /// <inheritdoc/>
-        public Item LoadTreeSafe(TagNode tree)
+        public Item LoadTreeSafe(TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree))
-            {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }

@@ -404,7 +404,7 @@ namespace Substrate
             }
 
             _level = new Level(this);
-            _level = _level.LoadTreeSafe(tree.Root);
+            _level = _level.LoadTreeSafe(tree.Root, out NbtVerificationResults verificationResults);
 
             return _level != null;
         }

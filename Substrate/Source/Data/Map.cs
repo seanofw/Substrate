@@ -272,11 +272,10 @@ namespace Substrate.Data
         /// </summary>
         /// <param name="tree">The root node of a Map subtree.</param>
         /// <returns>The <see cref="Map"/> returns itself on success, or null if the tree failed validation.</returns>
-        public virtual Map LoadTreeSafe (TagNode tree)
+        public virtual Map LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree)) {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             Map map = LoadTree(tree);
 

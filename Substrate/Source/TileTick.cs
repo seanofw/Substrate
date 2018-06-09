@@ -137,9 +137,9 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a <see cref="TileTick"/> subtree.</param>
         /// <returns>A new <see cref="TileTick"/> on success, or null if the tree failed validation.</returns>
-        public static TileTick FromTreeSafe (TagNode tree)
+        public static TileTick FromTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
         {
-            return new TileTick().LoadTreeSafe(tree);
+            return new TileTick().LoadTreeSafe(tree, out verificationResults);
         }
 
         #region INbtObject<TileTick> Members
@@ -180,11 +180,10 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a <see cref="TileTick"/> subtree.</param>
         /// <returns>The <see cref="TileTick"/> returns itself on success, or null if the tree failed validation.</returns>
-        public TileTick LoadTreeSafe (TagNode tree)
+        public TileTick LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree)) {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }

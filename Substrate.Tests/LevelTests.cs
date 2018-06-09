@@ -34,7 +34,7 @@ namespace Substrate.Tests
             NbtTree levelTree = LoadLevelTree(@"..\..\Data\1_6_4-survival\level.dat");
 
             Level level = new Level(null);
-            level = level.LoadTreeSafe(levelTree.Root);
+            level = level.LoadTreeSafe(levelTree.Root, out NbtVerificationResults verificationResults);
             Assert.IsNotNull(level);
         }
 
@@ -44,7 +44,7 @@ namespace Substrate.Tests
             NbtTree levelTree = LoadLevelTree(@"..\..\Data\1_7_2-survival\level.dat");
 
             Level level = new Level(null);
-            level = level.LoadTreeSafe(levelTree.Root);
+            level = level.LoadTreeSafe(levelTree.Root, out NbtVerificationResults verificationResults);
             Assert.IsNotNull(level);
         }
 
@@ -54,7 +54,7 @@ namespace Substrate.Tests
             NbtTree levelTree = LoadLevelTree(@"..\..\Data\1_7_10-survival\level.dat");
 
             Level level = new Level(null);
-            level = level.LoadTreeSafe(levelTree.Root);
+            level = level.LoadTreeSafe(levelTree.Root, out NbtVerificationResults verificationResults);
             Assert.IsNotNull(level);
         }
 
@@ -64,7 +64,7 @@ namespace Substrate.Tests
             NbtTree levelTree = LoadLevelTree(@"..\..\Data\1_8_3-survival\level.dat");
 
             Level level = new Level(null);
-            level = level.LoadTreeSafe(levelTree.Root);
+            level = level.LoadTreeSafe(levelTree.Root, out NbtVerificationResults verificationResults);
             Assert.IsNotNull(level);
         }
 
@@ -74,7 +74,7 @@ namespace Substrate.Tests
             NbtTree levelTree = LoadLevelTree(@"..\..\Data\1_9_2-survival\level.dat");
 
             Level level = new Level(null);
-            level = level.LoadTreeSafe(levelTree.Root);
+            level = level.LoadTreeSafe(levelTree.Root, out NbtVerificationResults verificationResults);
             Assert.IsNotNull(level);
         }
 
@@ -84,7 +84,7 @@ namespace Substrate.Tests
             NbtTree levelTree = LoadLevelTree(@"..\..\Data\1_12_2-survival\level.dat");
 
             Level level = new Level(null);
-            level = level.LoadTreeSafe(levelTree.Root);
+            level = level.LoadTreeSafe(levelTree.Root, out NbtVerificationResults verificationResults);
             Assert.IsNotNull(level);
 
 

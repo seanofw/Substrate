@@ -89,7 +89,7 @@ namespace Substrate
             }
 
             try {
-                Player p = new Player().LoadTreeSafe(GetPlayerTree(name).Root);
+                Player p = new Player().LoadTreeSafe(GetPlayerTree(name).Root, out NbtVerificationResults verificationResults);
                 p.Name = name;
                 return p;
             }

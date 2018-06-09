@@ -463,12 +463,10 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a Player subtree.</param>
         /// <returns>The <see cref="Player"/> returns itself on success, or null if the tree failed validation.</returns>
-        public virtual new Player LoadTreeSafe(TagNode tree)
+        public virtual new Player LoadTreeSafe(TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree))
-            {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }

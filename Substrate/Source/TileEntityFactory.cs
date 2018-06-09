@@ -47,7 +47,7 @@ namespace Substrate
 
             TileEntity te = Activator.CreateInstance(t) as TileEntity;
 
-            return te.LoadTreeSafe(tree);
+            return te.LoadTreeSafe(tree, out NbtVerificationResults verificationResults);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Substrate
 
             TileEntity te = Activator.CreateInstance(t, true) as TileEntity;
             
-            return te.LoadTreeSafe(tree);
+            return te.LoadTreeSafe(tree, out NbtVerificationResults verificationResults);
         }
 
         /// <summary>

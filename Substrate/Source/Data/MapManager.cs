@@ -85,7 +85,7 @@ namespace Substrate.Data
             }
 
             try {
-                Map m = new Map().LoadTreeSafe(GetMapTree(id).Root);
+                Map m = new Map().LoadTreeSafe(GetMapTree(id).Root, out NbtVerificationResults verificationResults);
                 m.Id = id;
                 return m;
             }

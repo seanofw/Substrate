@@ -88,12 +88,10 @@ namespace Substrate
         }
 
         /// <inheritdoc />
-        public Enchantment LoadTreeSafe(TagNode tree)
+        public Enchantment LoadTreeSafe(TagNode tree, out NbtVerificationResults verificationResults)
         {
-            if (!ValidateTree(tree))
-            {
+            if (!(verificationResults = ValidateTree(tree)))
                 return null;
-            }
 
             return LoadTree(tree);
         }
