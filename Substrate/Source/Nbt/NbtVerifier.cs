@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Substrate.Nbt
 {
@@ -73,6 +74,12 @@ namespace Substrate.Nbt
 				return;
 			}
 
+			if (schema is SchemaNodeEither either)
+			{
+				VerifyEither(tag, either);
+				return;
+			}
+
 			_errors.Add(new NbtError(_path, NbtErrorKind.Error_InvalidTagType, "Unknown tag type."));
 			return;
 		}
@@ -123,6 +130,24 @@ namespace Substrate.Nbt
 			{
 				_errors.Add(new NbtError(_path, NbtErrorKind.Error_InvalidTagType, $"Expected a {schema.Type} value; got {StringifyActualValue(tag)}."));
 			}
+		}
+
+		private void VerifyEither(TagNode tag, SchemaNodeEither either)
+		{
+			foreach (SchemaNode possibleSchema in either)
+			{
+				NbtVerifier childVerifier = new NbtVerifier();
+				childVerifier._path = _path;
+				childVerifier.VerifyRecursively(tag, possibleSchema);
+				if (!childVerifier._errors.Any())
+				{
+					_warnings.AddRange(childVerifier._warnings);
+					return;
+				}
+			}
+
+			string types = string.Join(", ", either.Select(s => s.Type.ToString()));
+			_errors.Add(new NbtError(_path, NbtErrorKind.Error_InvalidTagType, $"Expected either of: {types}; got {StringifyActualValue(tag)}."));
 		}
 
 		private void VerifyString(TagNode tag, SchemaNodeString schema)

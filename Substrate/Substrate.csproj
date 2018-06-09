@@ -100,6 +100,7 @@
     <Compile Include="Source\Nbt\SchemaBuilder.cs" />
     <Compile Include="Source\Nbt\SchemaNode.cs" />
     <Compile Include="Source\Nbt\SchemaNodeByteArray.cs" />
+    <Compile Include="Source\Nbt\SchemaNodeEither.cs" />
     <Compile Include="Source\Nbt\SchemaNodeCompound.cs" />
     <Compile Include="Source\Nbt\SchemaNodeIntArray.cs" />
     <Compile Include="Source\Nbt\SchemaNodeList.cs" />

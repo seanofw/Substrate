@@ -55,18 +55,6 @@ namespace Substrate
         }
 
         /// <summary>
-        /// Gets a <see cref="BlockManager"/> for the default dimension.
-        /// </summary>
-        /// <returns>A <see cref="BlockManager"/> tied to the default dimension in this world.</returns>
-        /// <remarks>Get a <see cref="BlockManager"/> if you need to manage blocks as a global, unbounded matrix.  This abstracts away
-        /// any higher-level organizational divisions.  If your task is going to be heavily performance-bound, consider getting a
-        /// <see cref="RegionChunkManager"/> instead and working with blocks on a chunk-local level.</remarks>
-        public new BlockManager GetBlockManager ()
-        {
-            return GetBlockManagerVirt(Dimension.DEFAULT) as BlockManager;
-        }
-
-        /// <summary>
         /// Gets a <see cref="BlockManager"/> for the given dimension.
         /// </summary>
         /// <param name="dim">The id of the dimension to look up.</param>
@@ -74,7 +62,7 @@ namespace Substrate
         /// <remarks>Get a <see cref="BlockManager"/> if you need to manage blocks as a global, unbounded matrix.  This abstracts away
         /// any higher-level organizational divisions.  If your task is going to be heavily performance-bound, consider getting a
         /// <see cref="RegionChunkManager"/> instead and working with blocks on a chunk-local level.</remarks>
-        public new BlockManager GetBlockManager (int dim)
+        public new BlockManager GetBlockManager (int dim = Dimension.DEFAULT)
         {
             return GetBlockManagerVirt(dim) as BlockManager;
         }
@@ -85,22 +73,12 @@ namespace Substrate
         }
 
         /// <summary>
-        /// Gets a <see cref="RegionChunkManager"/> for the default dimension.
-        /// </summary>
-        /// <returns>A <see cref="RegionChunkManager"/> tied to the default dimension in this world.</returns>
-        /// <remarks>Get a <see cref="RegionChunkManager"/> if you you need to work with easily-digestible, bounded chunks of blocks.</remarks>
-        public new RegionChunkManager GetChunkManager ()
-        {
-            return GetChunkManagerVirt(Dimension.DEFAULT) as RegionChunkManager;
-        }
-
-        /// <summary>
         /// Gets a <see cref="RegionChunkManager"/> for the given dimension.
         /// </summary>
         /// <param name="dim">The id of the dimension to look up.</param>
         /// <returns>A <see cref="RegionChunkManager"/> tied to the given dimension in this world.</returns>
         /// <remarks>Get a <see cref="RegionChunkManager"/> if you you need to work with easily-digestible, bounded chunks of blocks.</remarks>
-        public new RegionChunkManager GetChunkManager (int dim)
+        public new RegionChunkManager GetChunkManager (int dim = Dimension.DEFAULT)
         {
             return GetChunkManagerVirt(dim) as RegionChunkManager;
         }
@@ -111,24 +89,13 @@ namespace Substrate
         }
 
         /// <summary>
-        /// Gets a <see cref="RegionManager"/> for the default dimension.
-        /// </summary>
-        /// <returns>A <see cref="RegionManager"/> tied to the defaul dimension in this world.</returns>
-        /// <remarks>Regions are a higher-level unit of organization for blocks unique to worlds created in Beta 1.3 and beyond.
-        /// Consider using the <see cref="RegionChunkManager"/> if you are interested in working with blocks.</remarks>
-        public AnvilRegionManager GetRegionManager ()
-        {
-            return GetRegionManager(Dimension.DEFAULT);
-        }
-
-        /// <summary>
         /// Gets a <see cref="RegionManager"/> for the given dimension.
         /// </summary>
         /// <param name="dim">The id of the dimension to look up.</param>
         /// <returns>A <see cref="RegionManager"/> tied to the given dimension in this world.</returns>
         /// <remarks>Regions are a higher-level unit of organization for blocks unique to worlds created in Beta 1.3 and beyond.
         /// Consider using the <see cref="RegionChunkManager"/> if you are interested in working with blocks.</remarks>
-        public AnvilRegionManager GetRegionManager (int dim)
+        public AnvilRegionManager GetRegionManager (int dim = Dimension.DEFAULT)
         {
             return GetRegionManager(DimensionFromInt(dim));
         }
@@ -174,20 +141,11 @@ namespace Substrate
         }
 
         /// <summary>
-        /// Gets the <see cref="ChunkCache"/> currently managing chunks in the default dimension.
-        /// </summary>
-        /// <returns>The <see cref="ChunkCache"/> for the default dimension, or null if the dimension was not found.</returns>
-        public ChunkCache GetChunkCache ()
-        {
-            return GetChunkCache(Dimension.DEFAULT);
-        }
-
-        /// <summary>
         /// Gets the <see cref="ChunkCache"/> currently managing chunks in the given dimension.
         /// </summary>
         /// <param name="dim">The id of a dimension to look up.</param>
         /// <returns>The <see cref="ChunkCache"/> for the given dimension, or null if the dimension was not found.</returns>
-        public ChunkCache GetChunkCache (int dim)
+        public ChunkCache GetChunkCache (int dim = Dimension.DEFAULT)
         {
             return GetChunkCache(DimensionFromInt(dim));  
         }
@@ -200,26 +158,19 @@ namespace Substrate
             return null;
         }
 
-        /// <summary>
-        /// Opens an existing Anvil-compatible Minecraft world and returns a new <see cref="AnvilWorld"/> to represent it.
-        /// </summary>
-        /// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
-        /// <returns>A new <see cref="BetaWorld"/> object representing an existing world on disk.</returns>
-        public static new AnvilWorld Open(string path, out NbtErrors errors)
-        {
-            return new AnvilWorld().OpenWorld(path, out errors);
-        }
-
 		/// <summary>
 		/// Opens an existing Anvil-compatible Minecraft world and returns a new <see cref="BetaWorld"/> to represent it.
 		/// </summary>
 		/// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
 		/// <param name="cacheSize">The preferred cache size in chunks for each opened dimension in this world.</param>
 		/// <returns>A new <see cref="BetaWorld"/> object representing an existing world on disk.</returns>
-		public static AnvilWorld Open(string path, int cacheSize, out NbtErrors errors)
+		public static AnvilWorld Open(string path, out NbtErrors errors, int? cacheSize = null)
         {
             AnvilWorld world = new AnvilWorld().OpenWorld(path, out errors);
-            world._prefCacheSize = cacheSize;
+			if (cacheSize.HasValue)
+			{
+				world._prefCacheSize = cacheSize.Value;
+			}
             return world;
         }
 
@@ -252,7 +203,7 @@ namespace Substrate
         }
 
         /// <exclude/>
-        protected override IBlockManager GetBlockManagerVirt (int dim)
+        protected override IBlockManager GetBlockManagerVirt (int dim = Dimension.DEFAULT)
         {
             return GetBlockManagerVirt(DimensionFromInt(dim));
         }
@@ -269,7 +220,7 @@ namespace Substrate
         }
 
         /// <exclude/>
-        protected override IChunkManager GetChunkManagerVirt (int dim)
+        protected override IChunkManager GetChunkManagerVirt (int dim = Dimension.DEFAULT)
         {
             return GetChunkManagerVirt(DimensionFromInt(dim));
         }
@@ -347,7 +298,9 @@ namespace Substrate
 
         private AnvilWorld OpenWorld (string path, out NbtErrors errors)
         {
-            if (!Directory.Exists(path)) {
+			Path = path;
+
+			if (!Directory.Exists(path)) {
 				if (File.Exists(path)) {
 					_levelFile = IO.Path.GetFileName(path);
 					path = IO.Path.GetDirectoryName(path);
@@ -358,15 +311,34 @@ namespace Substrate
                 }
             }
 
-            Path = path;
-
             string ldat = IO.Path.Combine(path, _levelFile);
             if (!File.Exists(ldat)) {
 				errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Data file \"{_levelFile}\" not found in \"{path}\"");
 				return null;
             }
 
-			errors = LoadLevel();
+			NBTFile nf = new NBTFile(IO.Path.Combine(Path, _levelFile));
+			NbtTree tree;
+
+			using (Stream nbtstr = nf.GetDataInputStream())
+			{
+				if (nbtstr == null)
+				{
+					errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Cannot open {_levelFile} for reading.");
+					return null;
+				}
+
+				tree = new NbtTree(nbtstr);
+			}
+
+			int? versionNumber = Level.ExtractVersionNumber(tree.Root);
+			if (!versionNumber.HasValue || versionNumber != 19133)
+			{
+				errors = NbtErrors.FromMessage(NbtErrorKind.Error_InvalidVersion, "This world does not use the Anvil file format.");
+				return null;
+			}
+
+			_level = new Level(this).LoadTreeSafe(tree.Root, out errors);
 
 			return !errors.HasErrors ? this : null;
         }
@@ -386,29 +358,6 @@ namespace Substrate
             _level = new Level(this);
 
             return this;
-        }
-
-        private NbtErrors LoadLevel ()
-        {
-            NBTFile nf = new NBTFile(IO.Path.Combine(Path, _levelFile));
-            NbtTree tree;
-
-            using (Stream nbtstr = nf.GetDataInputStream())
-            {
-                if (nbtstr == null)
-                    return NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Cannot open {_levelFile} for reading.");
-
-                tree = new NbtTree(nbtstr);
-            }
-
-			int? versionNumber = Level.ExtractVersionNumber(tree.Root);
-			if (!versionNumber.HasValue || versionNumber != 19133)
-				return NbtErrors.FromMessage(NbtErrorKind.Error_InvalidVersion, "This world does not use the Anvil file format.");
-
-			_level = new Level(this);
-            _level = _level.LoadTreeSafe(tree.Root, out NbtErrors errors);
-
-            return errors;
         }
 
         public static bool TryOpen(string path, out NbtWorld world, out NbtErrors errors, out bool isCorrectVersion)

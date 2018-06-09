@@ -58,7 +58,10 @@ namespace Substrate
     {
         private static readonly SchemaNodeCompound _schema = new SchemaNodeCompound("")
         {
-            new SchemaNodeScalar("id", TagType.TAG_SHORT),
+			new SchemaNodeEither("id",
+				new SchemaNodeScalar("id", TagType.TAG_SHORT),
+				new SchemaNodeScalar("id", TagType.TAG_STRING)
+			),
             new SchemaNodeScalar("Damage", TagType.TAG_SHORT),
             new SchemaNodeScalar("Count", TagType.TAG_BYTE),
             new SchemaNodeCompound("tag", new SchemaNodeCompound("") {
