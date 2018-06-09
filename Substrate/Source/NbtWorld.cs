@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using Substrate.Core;
 using Substrate.Nbt;
 using Substrate.Data;
-using System.Linq;
 
 namespace Substrate
 {
@@ -16,111 +12,57 @@ namespace Substrate
     {
         private const string _DATA_DIR = "data";
 
-        private string _path;
-        private string _dataDir;
+		/// <summary>
+		/// Gets or sets the path to the directory containing the world.
+		/// </summary>
+		public string Path { get; set; }
 
-        /// <summary>
-        /// Creates a new instance of an <see cref="NbtWorld"/> object.
-        /// </summary>
-        protected NbtWorld () {
-            _dataDir = _DATA_DIR;
-        }
+		/// <summary>
+		/// Gets or sets the directory containing data resources, rooted in the world directory.
+		/// </summary>
+		public string DataDirectory { get; set; } = _DATA_DIR;
 
-        /// <summary>
-        /// Gets or sets the path to the directory containing the world.
-        /// </summary>
-        public string Path
-        {
-            get { return _path; }
-            set { _path = value; }
-        }
+		/// <summary>
+		/// Gets a reference to this world's <see cref="Level"/> object.
+		/// </summary>
+		public abstract Level Level { get; }
 
-        /// <summary>
-        /// Gets or sets the directory containing data resources, rooted in the world directory.
-        /// </summary>
-        public string DataDirectory
-        {
-            get { return _dataDir; }
-            set { _dataDir = value; }
-        }
+		/// <summary>
+		/// Gets an <see cref="IBlockManager"/> for the given dimension.
+		/// </summary>
+		/// <param name="dim">The id of the dimension to look up.</param>
+		/// <returns>An <see cref="IBlockManager"/> tied to the given dimension in this world.</returns>
+		public IBlockManager GetBlockManager(int dim = Dimension.DEFAULT) => GetBlockManagerVirt(dim);
 
-        /// <summary>
-        /// Gets a reference to this world's <see cref="Level"/> object.
-        /// </summary>
-        public abstract Level Level { get; }
+		public IBlockManager GetBlockManager(string dim) => GetBlockManagerVirt(dim);
 
-        /// <summary>
-        /// Gets an <see cref="IBlockManager"/> for the default dimension.
-        /// </summary>
-        /// <returns>An <see cref="IBlockManager"/> tied to the default dimension in this world.</returns>
-        public IBlockManager GetBlockManager ()
-        {
-            return GetBlockManagerVirt(Dimension.DEFAULT);
-        }
+		/// <summary>
+		/// Gets an <see cref="IChunkManager"/> for the given dimension.
+		/// </summary>
+		/// <param name="dim">The id of the dimension to look up.</param>
+		/// <returns>An <see cref="IChunkManager"/> tied to the given dimension in this world.</returns>
+		public IChunkManager GetChunkManager(int dim = Dimension.DEFAULT) => GetChunkManagerVirt(dim);
 
-        /// <summary>
-        /// Gets an <see cref="IBlockManager"/> for the given dimension.
-        /// </summary>
-        /// <param name="dim">The id of the dimension to look up.</param>
-        /// <returns>An <see cref="IBlockManager"/> tied to the given dimension in this world.</returns>
-        public IBlockManager GetBlockManager (int dim)
-        {
-            return GetBlockManagerVirt(dim);
-        }
+		public IChunkManager GetChunkManager(string dim) => GetChunkManagerVirt(dim);
 
-        public IBlockManager GetBlockManager (string dim)
-        {
-            return GetBlockManagerVirt(dim);
-        }
+		/// <summary>
+		/// Gets an <see cref="IPlayerManager"/> for maanging players on multiplayer worlds.
+		/// </summary>
+		/// <returns>An <see cref="IPlayerManager"/> for this world.</returns>
+		public IPlayerManager GetPlayerManager() => GetPlayerManagerVirt();
 
-        /// <summary>
-        /// Gets an <see cref="IChunkManager"/> for the default dimension.
-        /// </summary>
-        /// <returns>An <see cref="IChunkManager"/> tied to the default dimension in this world.</returns>
-        public IChunkManager GetChunkManager ()
-        {
-            return GetChunkManagerVirt(Dimension.DEFAULT);
-        }
+		/// <summary>
+		/// Gets a <see cref="DataManager"/> for managing data resources, such as maps.
+		/// </summary>
+		/// <returns>A <see cref="DataManager"/> for this world.</returns>
+		public DataManager GetDataManager() => GetDataManagerVirt();
 
-        /// <summary>
-        /// Gets an <see cref="IChunkManager"/> for the given dimension.
-        /// </summary>
-        /// <param name="dim">The id of the dimension to look up.</param>
-        /// <returns>An <see cref="IChunkManager"/> tied to the given dimension in this world.</returns>
-        public IChunkManager GetChunkManager (int dim)
-        {
-            return GetChunkManagerVirt(dim);
-        }
-
-        public IChunkManager GetChunkManager (string dim)
-        {
-            return GetChunkManagerVirt(dim);
-        }
-
-        /// <summary>
-        /// Gets an <see cref="IPlayerManager"/> for maanging players on multiplayer worlds.
-        /// </summary>
-        /// <returns>An <see cref="IPlayerManager"/> for this world.</returns>
-        public IPlayerManager GetPlayerManager ()
-        {
-            return GetPlayerManagerVirt();
-        }
-
-        /// <summary>
-        /// Gets a <see cref="DataManager"/> for managing data resources, such as maps.
-        /// </summary>
-        /// <returns>A <see cref="DataManager"/> for this world.</returns>
-        public DataManager GetDataManager ()
-        {
-            return GetDataManagerVirt();
-        }
-
-        /// <summary>
-        /// Attempts to determine the best matching world type of the given path, and open the world as that type.
-        /// </summary>
-        /// <param name="path">The path to the directory containing the world.</param>
-        /// <returns>A concrete <see cref="NbtWorld"/> type, or null if the world cannot be opened or is ambiguos.</returns>
-        public static NbtWorld Open (string path, out NbtErrors errors)
+		/// <summary>
+		/// Attempts to determine the best matching world type of the given path, and open the world as that type.
+		/// </summary>
+		/// <param name="path">The path to the directory containing the world.</param>
+		/// <returns>A concrete <see cref="NbtWorld"/> type, or null if the world cannot be opened or is ambiguos.</returns>
+		public static NbtWorld Open (string path, out NbtErrors errors)
         {
             OpenWorldEventArgs eventArgs = new OpenWorldEventArgs(path);
 
@@ -159,31 +101,22 @@ namespace Substrate
         /// <returns>An <see cref="IChunkManager"/> for the given dimension in the world.</returns>
         protected abstract IChunkManager GetChunkManagerVirt (int dim);
 
-        protected virtual IBlockManager GetBlockManagerVirt (string dim)
-        {
-            throw new NotImplementedException();
-        }
+		protected virtual IBlockManager GetBlockManagerVirt(string dim) => throw new NotImplementedException();
 
-        protected virtual IChunkManager GetChunkManagerVirt (string dim)
-        {
-            throw new NotImplementedException();
-        }
+		protected virtual IChunkManager GetChunkManagerVirt(string dim) => throw new NotImplementedException();
 
-        /// <summary>
-        /// Virtual implementor of <see cref="GetPlayerManager"/>.
-        /// </summary>
-        /// <returns>An <see cref="IPlayerManager"/> for the given dimension in the world.</returns>
-        protected abstract IPlayerManager GetPlayerManagerVirt ();
+		/// <summary>
+		/// Virtual implementor of <see cref="GetPlayerManager"/>.
+		/// </summary>
+		/// <returns>An <see cref="IPlayerManager"/> for the given dimension in the world.</returns>
+		protected abstract IPlayerManager GetPlayerManagerVirt ();
 
-        /// <summary>
-        /// Virtual implementor of <see cref="GetDataManager"/>
-        /// </summary>
-        /// <returns>A <see cref="DataManager"/> for the given dimension in the world.</returns>
-        protected virtual DataManager GetDataManagerVirt ()
-        {
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		/// Virtual implementor of <see cref="GetDataManager"/>
+		/// </summary>
+		/// <returns>A <see cref="DataManager"/> for the given dimension in the world.</returns>
+		protected virtual DataManager GetDataManagerVirt() => throw new NotImplementedException();
 
-        #endregion
-    }
+		#endregion
+	}
 }
