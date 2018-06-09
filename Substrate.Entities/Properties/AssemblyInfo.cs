@@ -35,6 +35,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
-
-// This library is compatible with all CLS-compliant .NET programming languages.
-[assembly: CLSCompliant(true)]

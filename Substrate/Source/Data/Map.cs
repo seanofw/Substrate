@@ -322,19 +322,19 @@ namespace Substrate.Data
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
         public virtual bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, _schema).Verify();
-        }
+			return NbtVerifier.Verify(tree, _schema);
+		}
 
-        #endregion
+		#endregion
 
 
-        #region ICopyable<Map> Members
+		#region ICopyable<Map> Members
 
-        /// <summary>
-        /// Creates a deep-copy of the <see cref="Map"/>.
-        /// </summary>
-        /// <returns>A deep-copy of the <see cref="Map"/>.</returns>
-        public virtual Map Copy ()
+		/// <summary>
+		/// Creates a deep-copy of the <see cref="Map"/>.
+		/// </summary>
+		/// <returns>A deep-copy of the <see cref="Map"/>.</returns>
+		public virtual Map Copy ()
         {
             return new Map(this);
         }

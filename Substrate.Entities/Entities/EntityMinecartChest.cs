@@ -77,7 +77,7 @@ namespace Substrate.Entities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, MinecartChestSchema).Verify();
+            return NbtVerifier.Verify(tree, MinecartChestSchema);
         }
 
         #endregion

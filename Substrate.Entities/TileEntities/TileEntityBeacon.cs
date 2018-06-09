@@ -103,7 +103,7 @@ namespace Substrate.TileEntities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, BeaconSchema).Verify();
+            return NbtVerifier.Verify(tree, BeaconSchema);
         }
 
         #endregion

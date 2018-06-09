@@ -130,7 +130,7 @@ namespace Substrate.TileEntities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, PistonSchema).Verify();
+            return NbtVerifier.Verify(tree, PistonSchema);
         }
 
         #endregion

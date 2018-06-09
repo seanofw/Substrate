@@ -115,7 +115,7 @@ namespace Substrate.Data
 
         public virtual bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, _schema).Verify();
+            return NbtVerifier.Verify(tree, _schema);
         }
 
         #endregion

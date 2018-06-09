@@ -347,8 +347,7 @@ namespace Substrate
 
         public bool ValidateTree (TagNode tree)
         {
-            NbtVerifier v = new NbtVerifier(tree, LevelSchema);
-            return v.Verify();
+			return NbtVerifier.Verify(tree, LevelSchema);
         }
 
         #endregion

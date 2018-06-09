@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Substrate;
+﻿
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Substrate.Core;
 using Substrate.Nbt;
-using System.IO;
-using System.Diagnostics;
 using Substrate.Source.Nbt;
 
 namespace Substrate.Tests
@@ -14,19 +10,6 @@ namespace Substrate.Tests
     [TestClass]
     public class LevelTests
     {
-        [ClassInitialize()]
-        public static void ClassInit(TestContext context)
-        {
-            NbtVerifier.UnexpectedTag += new VerifierEventHandler((TagEventArgs e) =>
-            {
-                var fullName = e.Schema.Name + "." + e.TagName;
-
-                Trace.WriteLine($"UnexpectedTag {fullName}");
-
-                return TagEventCode.NEXT;
-            });
-        }
-
         NbtTree LoadLevelTree(string path)
         {
             NBTFile nf = new NBTFile(path);
@@ -113,20 +96,20 @@ namespace Substrate.Tests
             NbtTree villageTree = LoadLevelTree(@"..\..\Data\1_12_2-survival\data\Village.dat");
 
             NbtTree villagesTree = LoadLevelTree(@"..\..\Data\1_12_2-survival\data\villages.dat");
-            Assert.IsTrue(new NbtVerifier(villagesTree.Root, Villages.Schema).Verify());
+            Assert.IsTrue(NbtVerifier.Verify(villagesTree.Root, Villages.Schema));
 
             NbtTree villagesEndTree = LoadLevelTree(@"..\..\Data\1_12_2-survival\data\villages_end.dat");
-            Assert.IsTrue(new NbtVerifier(villagesEndTree.Root, Villages.Schema).Verify());
+            Assert.IsTrue(NbtVerifier.Verify(villagesEndTree.Root, Villages.Schema));
 
             NbtTree villagesNetherTree = LoadLevelTree(@"..\..\Data\1_12_2-survival\data\villages_nether.dat");
-            Assert.IsTrue(new NbtVerifier(villagesNetherTree.Root, Villages.Schema).Verify());
+            Assert.IsTrue(NbtVerifier.Verify(villagesNetherTree.Root, Villages.Schema));
         }
 
         [TestMethod]
         public void LoadTreeTest_1_12_2_survival_SchemaBuilderLoader()
         {
             NbtTree levelTree = LoadLevelTree(@"..\..\Data\1_12_2-survival\level.dat");
-            Assert.IsTrue(new NbtVerifier(levelTree.Root, Level.Schema).Verify());
+            Assert.IsTrue(NbtVerifier.Verify(levelTree.Root, Level.Schema));
 
             var level = new Level(null);
             var level2 = new Level(null);
@@ -151,7 +134,7 @@ namespace Substrate.Tests
             Assert.IsNotNull(world);
 
             NbtTree villagesNetherTree = LoadLevelTree(@"..\..\Data\Climatic Islands [ENG]\level.dat");
-            Assert.IsTrue(new NbtVerifier(villagesNetherTree.Root, Level.Schema).Verify());
+            Assert.IsTrue(NbtVerifier.Verify(villagesNetherTree.Root, Level.Schema));
         }
     }
 }

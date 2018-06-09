@@ -1149,7 +1149,7 @@ namespace Substrate
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
         public virtual bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, _schema).Verify();
+            return NbtVerifier.Verify(tree, _schema);
         }
 
         #endregion

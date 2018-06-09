@@ -337,8 +337,7 @@ namespace Substrate
         /// <returns>Status indicating if the tree represents a valid chunk.</returns>
         public bool ValidateTree (TagNode tree)
         {
-            NbtVerifier v = new NbtVerifier(tree, LevelSchema);
-            return v.Verify();
+			return NbtVerifier.Verify(tree, LevelSchema);
         }
 
         #endregion

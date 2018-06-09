@@ -275,7 +275,7 @@ namespace Substrate
         /// <inheritdoc/>
         public bool ValidateTree(TagNode tree)
         {
-            return new NbtVerifier(tree, _schema).Verify();
+            return NbtVerifier.Verify(tree, _schema);
         }
 
         #endregion

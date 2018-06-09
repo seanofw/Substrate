@@ -115,7 +115,7 @@ namespace Substrate.Entities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, FireballSchema).Verify();
+            return NbtVerifier.Verify(tree, FireballSchema);
         }
 
         #endregion

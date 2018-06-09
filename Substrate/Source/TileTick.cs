@@ -216,18 +216,18 @@ namespace Substrate
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
         public bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, _schema).Verify();
-        }
+			return NbtVerifier.Verify(tree, _schema);
+		}
 
-        #endregion
+		#endregion
 
-        #region ICopyable<TileTick> Members
+		#region ICopyable<TileTick> Members
 
-        /// <summary>
-        /// Creates a deep-copy of the <see cref="TileTick"/> including any data defined in a subtype.
-        /// </summary>
-        /// <returns>A deep-copy of the <see cref="TileTick"/>.</returns>
-        public virtual TileTick Copy ()
+		/// <summary>
+		/// Creates a deep-copy of the <see cref="TileTick"/> including any data defined in a subtype.
+		/// </summary>
+		/// <returns>A deep-copy of the <see cref="TileTick"/>.</returns>
+		public virtual TileTick Copy ()
         {
             return new TileTick(this);
         }

@@ -38,7 +38,7 @@ namespace Substrate.Entities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, EnderEyeSchema).Verify();
+            return NbtVerifier.Verify(tree, EnderEyeSchema);
         }
 
         #endregion

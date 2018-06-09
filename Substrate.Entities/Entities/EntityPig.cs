@@ -71,7 +71,7 @@ namespace Substrate.Entities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, PigSchema).Verify();
+            return NbtVerifier.Verify(tree, PigSchema);
         }
 
         #endregion

@@ -117,11 +117,8 @@ namespace Substrate.ImportExport
                 tree = new NbtTree(nbtStream);
             }
 
-            NbtVerifier v = new NbtVerifier(tree.Root, _schema);
-            if (!v.Verify())
-            {
+            if (!NbtVerifier.Verify(tree.Root, _schema))
                 return null;
-            }
 
             //TagNodeCompound schematic = tree.Root["Schematic"] as TagNodeCompound;
             TagNodeCompound schematic = tree.Root;

@@ -38,7 +38,7 @@ namespace Substrate.Entities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, MagmaCubeSchema).Verify();
+            return NbtVerifier.Verify(tree, MagmaCubeSchema);
         }
 
         #endregion

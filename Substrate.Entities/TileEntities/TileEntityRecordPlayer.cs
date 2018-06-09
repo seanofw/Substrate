@@ -86,7 +86,7 @@ namespace Substrate.TileEntities
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, RecordPlayerSchema).Verify();
+            return NbtVerifier.Verify(tree, RecordPlayerSchema);
         }
 
         #endregion

@@ -159,10 +159,9 @@ namespace Substrate
             return copy;
         }
 
-        public bool ValidateTree (TagNode tree)
+        public bool ValidateTree(TagNode tree)
         {
-            NbtVerifier v = new NbtVerifier(tree, SectionSchema);
-            return v.Verify();
+            return NbtVerifier.Verify(tree, SectionSchema);
         }
 
         #endregion

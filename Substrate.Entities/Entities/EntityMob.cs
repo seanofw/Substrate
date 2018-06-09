@@ -204,7 +204,7 @@ using Substrate.Core;
 
         public override bool ValidateTree (TagNode tree)
         {
-            return new NbtVerifier(tree, MobSchema).Verify();
+            return NbtVerifier.Verify(tree, MobSchema);
         }
 
         #endregion

@@ -561,19 +561,19 @@ namespace Substrate
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
         public virtual new bool ValidateTree(TagNode tree)
         {
-            return new NbtVerifier(tree, _schema).Verify();
-        }
+			return NbtVerifier.Verify(tree, _schema);
+		}
 
-        #endregion
+		#endregion
 
 
-        #region ICopyable<Entity> Members
+		#region ICopyable<Entity> Members
 
-        /// <summary>
-        /// Creates a deep-copy of the <see cref="Player"/>.
-        /// </summary>
-        /// <returns>A deep-copy of the <see cref="Player"/>.</returns>
-        public virtual new Player Copy()
+		/// <summary>
+		/// Creates a deep-copy of the <see cref="Player"/>.
+		/// </summary>
+		/// <returns>A deep-copy of the <see cref="Player"/>.</returns>
+		public virtual new Player Copy()
         {
             return new Player(this);
         }
