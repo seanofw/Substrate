@@ -19,7 +19,12 @@ namespace Substrate.Nbt
 
 		public override string ToString()
 		{
-			return "/" + string.Join("/", Path) + ": " + Message;
+			string errorKind = ErrorKind.ToString().Replace("_", ": ");
+
+			if (Path.Any())
+				return errorKind + ": /" + string.Join("/", Path) + ": " + Message;
+			else
+				return errorKind + ": " + Message;
 		}
 	}
 }

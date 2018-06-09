@@ -8,13 +8,13 @@ namespace Substrate.Nbt
 		private List<NbtError> _warnings = new List<NbtError>();
 		private List<string> _path = new List<string>();
 
- 		public static NbtVerificationResults Verify(TagNode root, SchemaNode schema)
+ 		public static NbtErrors Verify(TagNode root, SchemaNode schema)
 		{
 			NbtVerifier verifier = new NbtVerifier();
 
 			verifier.VerifyRecursively(root, schema);
 
-			return new NbtVerificationResults(verifier._errors, verifier._warnings);
+			return new NbtErrors(verifier._errors, verifier._warnings);
 		}
 
 		private void VerifyRecursively(TagNode tag, SchemaNode schema)

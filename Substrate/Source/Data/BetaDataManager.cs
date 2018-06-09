@@ -91,9 +91,9 @@ namespace Substrate.Data
             return this;
         }
 
-        public virtual BetaDataManager LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public virtual BetaDataManager LoadTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            if (!(verificationResults = ValidateTree(tree)))
+            if (!(errors = ValidateTree(tree)))
 				return null;
 
             return LoadTree(tree);
@@ -112,7 +112,7 @@ namespace Substrate.Data
             return tree;
         }
 
-        public virtual NbtVerificationResults ValidateTree (TagNode tree)
+        public virtual NbtErrors ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, _schema);
         }

@@ -96,7 +96,7 @@
     <Compile Include="Source\Nbt\NbtErrorKind.cs" />
     <Compile Include="Source\Nbt\NbtIOException.cs" />
     <Compile Include="Source\Nbt\NbtTree.cs" />
-    <Compile Include="Source\Nbt\NbtVerificationResults.cs" />
+    <Compile Include="Source\Nbt\NbtErrors.cs" />
     <Compile Include="Source\Nbt\SchemaBuilder.cs" />
     <Compile Include="Source\Nbt\SchemaNode.cs" />
     <Compile Include="Source\Nbt\SchemaNodeByteArray.cs" />

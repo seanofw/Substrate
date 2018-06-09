@@ -272,9 +272,9 @@ namespace Substrate.Data
         /// </summary>
         /// <param name="tree">The root node of a Map subtree.</param>
         /// <returns>The <see cref="Map"/> returns itself on success, or null if the tree failed validation.</returns>
-        public virtual Map LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public virtual Map LoadTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            if (!(verificationResults = ValidateTree(tree)))
+            if (!(errors = ValidateTree(tree)))
                 return null;
 
             Map map = LoadTree(tree);
@@ -319,7 +319,7 @@ namespace Substrate.Data
         /// </summary>
         /// <param name="tree">The root node of a Map subtree.</param>
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
-        public virtual NbtVerificationResults ValidateTree (TagNode tree)
+        public virtual NbtErrors ValidateTree (TagNode tree)
         {
 			return NbtVerifier.Verify(tree, _schema);
 		}

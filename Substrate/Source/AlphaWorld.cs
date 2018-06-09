@@ -218,7 +218,8 @@ namespace Substrate
                 throw new FileNotFoundException("Data file '" + _levelFile + "' not found in '" + path + "'", ldat);
             }
 
-            if (!LoadLevel()) {
+			NbtErrors errors = LoadLevel();
+            if (!errors) {
                 throw new Exception("Failed to load '" + _levelFile + "'");
             }
 
@@ -238,7 +239,7 @@ namespace Substrate
             return this;
         }
 
-        private bool LoadLevel ()
+        private NbtErrors LoadLevel ()
         {
             NBTFile nf = new NBTFile(IO.Path.Combine(Path, _levelFile));
             NbtTree tree;
@@ -246,17 +247,15 @@ namespace Substrate
             using (Stream nbtstr = nf.GetDataInputStream())
             {
                 if (nbtstr == null)
-                {
-                    return false;
-                }
+					return NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Cannot open {_levelFile} for reading.");
 
-                tree = new NbtTree(nbtstr);
+				tree = new NbtTree(nbtstr);
             }
 
             _level = new Level(this);
-            _level = _level.LoadTreeSafe(tree.Root, out NbtVerificationResults verificationResults);
+            _level = _level.LoadTreeSafe(tree.Root, out NbtErrors errors);
 
-            return _level != null;
+            return errors;
         }
 
 

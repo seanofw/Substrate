@@ -93,7 +93,7 @@ namespace Substrate.Entities
             return tree;
         }
 
-        public override NbtVerificationResults ValidateTree (TagNode tree)
+        public override NbtErrors ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, ItemSchema);
         }

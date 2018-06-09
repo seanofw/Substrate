@@ -129,7 +129,7 @@ namespace Substrate
         {
             AnvilChunk c = new AnvilChunk();
 
-            return c.LoadTreeSafe(tree.Root, out NbtVerificationResults verificationResults);
+            return c.LoadTreeSafe(tree.Root, out NbtErrors errors);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Substrate
             foreach (TagNodeCompound tag in _tileEntities) {
                 TileEntity te = TileEntityFactory.Create(tag);
                 if (te == null) {
-                    te = TileEntity.FromTreeSafe(tag, out NbtVerificationResults verificationResults);
+                    te = TileEntity.FromTreeSafe(tag, out NbtErrors errors);
                 }
 
                 if (te != null) {
@@ -175,7 +175,7 @@ namespace Substrate
             if (_tileTicks != null) {
                 List<TileTick> tileTicks = new List<TileTick>();
                 foreach (TagNodeCompound tag in _tileTicks) {
-                    TileTick tt = TileTick.FromTreeSafe(tag, out NbtVerificationResults verificationResults);
+                    TileTick tt = TileTick.FromTreeSafe(tag, out NbtErrors errors);
 
                     if (tt != null) {
                         tt.MoveBy(diffx, 0, diffz);
@@ -306,9 +306,9 @@ namespace Substrate
             return this;
         }
 
-        public AnvilChunk LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public AnvilChunk LoadTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            if (!(verificationResults = ValidateTree(tree)))
+            if (!(errors = ValidateTree(tree)))
                 return null;
 
             return LoadTree(tree);
@@ -344,7 +344,7 @@ namespace Substrate
             return levelCopy;
         }
 
-        public NbtVerificationResults ValidateTree (TagNode tree)
+        public NbtErrors ValidateTree (TagNode tree)
         {
 			return NbtVerifier.Verify(tree, LevelSchema);
         }

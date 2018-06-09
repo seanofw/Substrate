@@ -137,9 +137,9 @@ namespace Substrate
             return this;
         }
 
-        public AnvilSection LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public AnvilSection LoadTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            if (!(verificationResults = ValidateTree(tree)))
+            if (!(errors = ValidateTree(tree)))
                 return null;
 
             return LoadTree(tree);
@@ -158,7 +158,7 @@ namespace Substrate
             return copy;
         }
 
-        public NbtVerificationResults ValidateTree(TagNode tree)
+        public NbtErrors ValidateTree(TagNode tree)
         {
             return NbtVerifier.Verify(tree, SectionSchema);
         }

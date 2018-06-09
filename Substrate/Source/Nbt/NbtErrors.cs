@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Substrate.Nbt
 {
-	public class NbtVerificationResults : ICollection<NbtError>
+	public class NbtErrors : ICollection<NbtError>
 	{
 		public bool HasErrors => Errors.Count != 0;
 		public bool HasWarnings => Warnings.Count != 0;
@@ -17,13 +17,22 @@ namespace Substrate.Nbt
 		public readonly IList<NbtError> Errors;
 		public readonly IList<NbtError> Warnings;
 
-		public NbtVerificationResults(IEnumerable<NbtError> errors, IEnumerable<NbtError> warnings)
+		public NbtErrors(IEnumerable<NbtError> errors, IEnumerable<NbtError> warnings)
 		{
 			Errors = Array.AsReadOnly(errors.ToArray());
 			Warnings = Array.AsReadOnly(warnings.ToArray());
 		}
 
-		public static implicit operator bool(NbtVerificationResults results)
+		public static NbtErrors FromMessage(NbtErrorKind errorKind, string message)
+		{
+			IEnumerable<NbtError> errorCollection = new[] { new NbtError(new string[0], errorKind, message) };
+
+			return errorKind >= NbtErrorKind.Warnings
+				? new NbtErrors(new NbtError[0], errorCollection)
+				: new NbtErrors(errorCollection, new NbtError[0]);
+		}
+
+		public static implicit operator bool(NbtErrors results)
 		{
 			return results.Success;
 		}
@@ -69,6 +78,13 @@ namespace Substrate.Nbt
 		public bool Remove(NbtError item)
 		{
 			throw new NotSupportedException("This collection is read-only.");
+		}
+
+		public override string ToString()
+		{
+			if (!Errors.Any() && !Warnings.Any())
+				return "Success";
+			return $"{Errors.Count} Errors, {Warnings.Count} Warnings.";
 		}
 	}
 }

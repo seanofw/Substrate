@@ -19,9 +19,9 @@ namespace Substrate.Nbt
 		/// Attempt to load an NBT tree into the object with validation.
 		/// </summary>
 		/// <param name="tree">The root node of an NBT tree.</param>
-		/// <param name="verificationResults">The full results from the validation tests (including error messages).</param>
+		/// <param name="errors">The full results from the validation tests (including error messages).</param>
 		/// <returns>The object returns itself on success, or null if the tree failed validation.</returns>
-		T LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults);
+		T LoadTreeSafe (TagNode tree, out NbtErrors errors);
 
         /// <summary>
         /// Builds an NBT tree from the object's data.
@@ -35,6 +35,6 @@ namespace Substrate.Nbt
         /// <param name="tree">The root node of an NBT tree.</param>
         /// <returns>Status indicating whether the tree was valid for this object, as well
 		/// as any verification errors and warnings.</returns>
-        NbtVerificationResults ValidateTree (TagNode tree);
+        NbtErrors ValidateTree (TagNode tree);
     }
 }

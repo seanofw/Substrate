@@ -64,15 +64,15 @@ namespace Substrate.Entities
 
             _type = (CartType)ctree["Type"].ToTagInt().Data;
 
-			NbtVerificationResults verificationResults;
+			NbtErrors errors;
 
 			switch (_type) {
                 case CartType.EMPTY:
                     return this;
                 case CartType.CHEST:
-                    return new EntityMinecartChest().LoadTreeSafe(tree, out verificationResults);
+                    return new EntityMinecartChest().LoadTreeSafe(tree, out errors);
                 case CartType.FURNACE:
-                    return new EntityMinecartFurnace().LoadTreeSafe(tree, out verificationResults);
+                    return new EntityMinecartFurnace().LoadTreeSafe(tree, out errors);
                 default:
                     return this;
             }
@@ -86,7 +86,7 @@ namespace Substrate.Entities
             return tree;
         }
 
-        public override NbtVerificationResults ValidateTree (TagNode tree)
+        public override NbtErrors ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, MinecartSchema);
         }

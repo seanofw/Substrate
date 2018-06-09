@@ -159,9 +159,9 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a Tile Entity subtree.</param>
         /// <returns>A new <see cref="TileEntity"/> on success, or null if the tree failed validation.</returns>
-        public static TileEntity FromTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public static TileEntity FromTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            return new TileEntity().LoadTreeSafe(tree, out verificationResults);
+            return new TileEntity().LoadTreeSafe(tree, out errors);
         }
 
 
@@ -202,9 +202,9 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a Tile Entity subtree.</param>
         /// <returns>The <see cref="TileEntity"/> returns itself on success, or null if the tree failed validation.</returns>
-        public virtual TileEntity LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public virtual TileEntity LoadTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            if (!(verificationResults = ValidateTree(tree)))
+            if (!(errors = ValidateTree(tree)))
                 return null;
 
             return LoadTree(tree);
@@ -234,7 +234,7 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a Tile Entity subtree.</param>
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
-        public virtual NbtVerificationResults ValidateTree (TagNode tree)
+        public virtual NbtErrors ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, _schema);
         }

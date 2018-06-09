@@ -36,7 +36,7 @@ namespace Substrate.Entities
 
         #region INBTObject<Entity> Members
 
-        public override NbtVerificationResults ValidateTree (TagNode tree)
+        public override NbtErrors ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, EnderPearlSchema);
         }

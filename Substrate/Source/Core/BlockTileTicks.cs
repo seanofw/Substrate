@@ -95,7 +95,7 @@ namespace Substrate.Core
                 return null;
             }
 
-            return TileTick.FromTreeSafe(te, out NbtVerificationResults verificationResults);
+            return TileTick.FromTreeSafe(te, out NbtErrors errors);
         }
 
         public void SetTileTick(int x, int y, int z, TileTick te)

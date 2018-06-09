@@ -137,9 +137,9 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a <see cref="TileTick"/> subtree.</param>
         /// <returns>A new <see cref="TileTick"/> on success, or null if the tree failed validation.</returns>
-        public static TileTick FromTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public static TileTick FromTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            return new TileTick().LoadTreeSafe(tree, out verificationResults);
+            return new TileTick().LoadTreeSafe(tree, out errors);
         }
 
         #region INbtObject<TileTick> Members
@@ -180,9 +180,9 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a <see cref="TileTick"/> subtree.</param>
         /// <returns>The <see cref="TileTick"/> returns itself on success, or null if the tree failed validation.</returns>
-        public TileTick LoadTreeSafe (TagNode tree, out NbtVerificationResults verificationResults)
+        public TileTick LoadTreeSafe (TagNode tree, out NbtErrors errors)
         {
-            if (!(verificationResults = ValidateTree(tree)))
+            if (!(errors = ValidateTree(tree)))
                 return null;
 
             return LoadTree(tree);
@@ -213,7 +213,7 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a <see cref="TileTick"/> subtree.</param>
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
-        public NbtVerificationResults ValidateTree (TagNode tree)
+        public NbtErrors ValidateTree (TagNode tree)
         {
 			return NbtVerifier.Verify(tree, _schema);
 		}
