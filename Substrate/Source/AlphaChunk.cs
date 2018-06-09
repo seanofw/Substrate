@@ -335,7 +335,7 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of the NBT tree to verify.</param>
         /// <returns>Status indicating if the tree represents a valid chunk.</returns>
-        public bool ValidateTree (TagNode tree)
+        public NbtVerificationResults ValidateTree (TagNode tree)
         {
 			return NbtVerifier.Verify(tree, LevelSchema);
         }

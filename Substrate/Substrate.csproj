@@ -64,10 +64,14 @@
     <Compile Include="Source\Data\MapConverter.cs" />
     <Compile Include="Source\Data\MapManager.cs" />
     <Compile Include="Source\Data\MapManagerInterface.cs" />
+    <Compile Include="Source\Difficulty.cs" />
     <Compile Include="Source\Enchantment.cs" />
     <Compile Include="Source\EnchantmentInfo.cs" />
+    <Compile Include="Source\GameRules.cs" />
+    <Compile Include="Source\GameType.cs" />
     <Compile Include="Source\ImportExport\Schematic.cs" />
     <Compile Include="Source\ItemCollection.cs" />
+    <Compile Include="Source\LevelData.cs" />
     <Compile Include="Source\LevelIOException.cs" />
     <Compile Include="Source\AlphaBlock.cs" />
     <Compile Include="Source\AlphaBlockRef.cs" />
@@ -156,6 +160,7 @@
     <Compile Include="Source\Core\LRUCache.cs" />
     <Compile Include="Source\Core\NibbleArray.cs" />
     <Compile Include="Source\TileTick.cs" />
+    <Compile Include="Source\TimeOfDay.cs" />
     <Compile Include="Source\Vector.cs" />
     <Compile Include="Source\Villages.cs" />
     <Compile Include="Source\World.cs" />

@@ -32,7 +32,8 @@ namespace Substrate.Nbt
         /// Validate an NBT tree, usually against an object-supplied schema.
         /// </summary>
         /// <param name="tree">The root node of an NBT tree.</param>
-        /// <returns>Status indicating whether the tree was valid for this object.</returns>
-        bool ValidateTree (TagNode tree);
+        /// <returns>Status indicating whether the tree was valid for this object, as well
+		/// as any verification errors and warnings.</returns>
+        NbtVerificationResults ValidateTree (TagNode tree);
     }
 }

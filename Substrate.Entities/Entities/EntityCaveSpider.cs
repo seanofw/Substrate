@@ -35,7 +35,7 @@ namespace Substrate.Entities
 
         #region INBTObject<Entity> Members
 
-        public override bool ValidateTree (TagNode tree)
+        public override NbtVerificationResults ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, CaveSpiderSchema);
         }

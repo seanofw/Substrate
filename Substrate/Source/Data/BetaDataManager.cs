@@ -113,7 +113,7 @@ namespace Substrate.Data
             return tree;
         }
 
-        public virtual bool ValidateTree (TagNode tree)
+        public virtual NbtVerificationResults ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, _schema);
         }

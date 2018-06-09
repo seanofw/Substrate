@@ -214,7 +214,7 @@ namespace Substrate
         /// </summary>
         /// <param name="tree">The root node of a <see cref="TileTick"/> subtree.</param>
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
-        public bool ValidateTree (TagNode tree)
+        public NbtVerificationResults ValidateTree (TagNode tree)
         {
 			return NbtVerifier.Verify(tree, _schema);
 		}

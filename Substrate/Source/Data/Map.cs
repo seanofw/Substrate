@@ -320,7 +320,7 @@ namespace Substrate.Data
         /// </summary>
         /// <param name="tree">The root node of a Map subtree.</param>
         /// <returns>Status indicating whether the tree was valid against the internal schema.</returns>
-        public virtual bool ValidateTree (TagNode tree)
+        public virtual NbtVerificationResults ValidateTree (TagNode tree)
         {
 			return NbtVerifier.Verify(tree, _schema);
 		}

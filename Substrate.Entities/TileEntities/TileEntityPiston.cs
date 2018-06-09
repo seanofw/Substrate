@@ -128,7 +128,7 @@ namespace Substrate.TileEntities
             return tree;
         }
 
-        public override bool ValidateTree (TagNode tree)
+        public override NbtVerificationResults ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, PistonSchema);
         }

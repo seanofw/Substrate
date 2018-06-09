@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Substrate.Nbt;
+using Substrate.Core;
 
 namespace Substrate.Entities
 {
-    using Substrate.Nbt;
-using Substrate.Core;
-
     /// <summary>
     /// Encompasses data in the "ActiveEffects" compound attribute of mob entity types, used to specify potion effects
     /// </summary>
@@ -202,7 +201,7 @@ using Substrate.Core;
             return tree;
         }
 
-        public override bool ValidateTree (TagNode tree)
+        public override NbtVerificationResults ValidateTree (TagNode tree)
         {
             return NbtVerifier.Verify(tree, MobSchema);
         }

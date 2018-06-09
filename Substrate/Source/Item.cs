@@ -273,7 +273,7 @@ namespace Substrate
         }
 
         /// <inheritdoc/>
-        public bool ValidateTree(TagNode tree)
+        public NbtVerificationResults ValidateTree(TagNode tree)
         {
             return NbtVerifier.Verify(tree, _schema);
         }
