@@ -5,18 +5,13 @@ using System.IO;
 using Substrate.Core;
 using Substrate.Nbt;
 using Substrate.Data;
+using System.Linq;
 
 namespace Substrate
 {
     /// <summary>
     /// An abstract representation of any conforming chunk-based world.
     /// </summary>
-    /// <remarks><para>By default, NbtWorld registers handlers to check if a given world can be opened as an <see cref="AlphaWorld"/> or
-    /// a <see cref="BetaWorld"/>, which are used by <see cref="NbtWorld"/>'s generic <see cref="Open(string)"/> method to automatically
-    /// detect a world's type and open it.</para>
-    /// <para>Advanced implementors can support loading other Nbt-compatible world formats by extending <see cref="NbtWorld"/> and registering
-    /// an event handler with the <see cref="ResolveOpen"/> event, which will allow the generic <see cref="Open(string)"/> method to
-    /// open worlds of the new format.</para></remarks>
     public abstract class NbtWorld
     {
         private const string _DATA_DIR = "data";
@@ -125,24 +120,21 @@ namespace Substrate
         /// </summary>
         /// <param name="path">The path to the directory containing the world.</param>
         /// <returns>A concrete <see cref="NbtWorld"/> type, or null if the world cannot be opened or is ambiguos.</returns>
-        public static NbtWorld Open (string path)
+        public static NbtWorld Open (string path, out NbtErrors errors)
         {
-            if (ResolveOpen == null) {
-                return null;
-            }
-
             OpenWorldEventArgs eventArgs = new OpenWorldEventArgs(path);
-            ResolveOpen(null, eventArgs);
 
-            if (eventArgs.HandlerCount != 1) {
-                return null;
-            }
+			NbtWorld world;
+			bool isCorrectVersion;
 
+			if (AnvilWorld.TryOpen(path, out world, out errors, out isCorrectVersion) || isCorrectVersion)
+				return world;
+			if (BetaWorld.TryOpen(path, out world, out errors, out isCorrectVersion) || isCorrectVersion)
+				return world;
+			if (AlphaWorld.TryOpen(path, out world, out errors, out isCorrectVersion) || isCorrectVersion)
+				return world;
 
-            foreach (OpenWorldCallback callback in eventArgs.Handlers) {
-                return callback(path);
-            }
-
+			errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, "Unknown world file format.");
             return null;
         }
 
@@ -150,11 +142,6 @@ namespace Substrate
         /// Saves the world's <see cref="Level"/> data, and any <see cref="IChunk"/> objects known to have unsaved changes.
         /// </summary>
         public abstract void Save ();
-
-        /// <summary>
-        /// Raised when <see cref="Open"/> is called, used to find a concrete <see cref="NbtWorld"/> type that can open the world.
-        /// </summary>
-        protected static event EventHandler<OpenWorldEventArgs> ResolveOpen;
 
         #region Covariant Return-Type Helpers
 
@@ -198,12 +185,5 @@ namespace Substrate
         }
 
         #endregion
-
-        static NbtWorld ()
-        {
-            ResolveOpen += AnvilWorld.OnResolveOpen;
-            ResolveOpen += BetaWorld.OnResolveOpen;
-            ResolveOpen += AlphaWorld.OnResolveOpen;
-        }
     }
 }

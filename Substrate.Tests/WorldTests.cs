@@ -14,77 +14,77 @@ namespace Substrate.Tests
         [TestMethod]
         public void OpenTest_1_6_4_survival()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_6_4-survival\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_6_4-survival\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_7_2_survival()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_7_2-survival\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_7_2-survival\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_7_10_survival()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_7_10-survival\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_7_10-survival\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_8_3_survival()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_3-survival\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_3-survival\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_8_3_debug()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_3-debug\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_3-debug\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_8_7_debug()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_7-debug\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_7-debug\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_8_7_survival()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_7-survival\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_7-survival\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_9_2_debug()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_9_2-debug\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_9_2-debug\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_9_2_survival()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_9_2-survival\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_9_2-survival\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_12_2_debug()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_12_2-debug\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_12_2-debug\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
         [TestMethod]
         public void OpenTest_1_12_2_survival()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_12_2-survival\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_12_2-survival\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
@@ -96,7 +96,7 @@ namespace Substrate.Tests
                 Assert.Inconclusive("Level not found, skipping test");
             }
 
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\Colors of the Rainbow SURVIVAL\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\Colors of the Rainbow SURVIVAL\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
 
@@ -108,7 +108,7 @@ namespace Substrate.Tests
                 Assert.Inconclusive("Level not found, skipping test");
             }
 
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\Climatic Islands [ENG]\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\Climatic Islands [ENG]\", out NbtErrors errors);
             Assert.IsNotNull(world);
         }
     }

@@ -575,6 +575,20 @@ namespace Substrate
 
         #region INBTObject<Player> Members
 
+		public static int? ExtractVersionNumber(TagNode tree)
+		{
+			TagNodeCompound dtree = tree as TagNodeCompound;
+			if (dtree == null)
+				return null;
+
+			TagNodeCompound ctree = dtree["Data"].ToTagCompound();
+
+			if (ctree.ContainsKey("version"))
+				return ctree["version"].ToTagInt();
+
+			return null;
+		}
+
         /// <summary>
         /// Attempt to load a Level subtree into the <see cref="Level"/> without validation.
         /// </summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using Substrate.Core;
 using Substrate.Nbt;
 
@@ -109,9 +110,9 @@ namespace Substrate
         /// </summary>
         /// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
         /// <returns>A new <see cref="AlphaWorld"/> object representing an existing world on disk.</returns>
-        public static new AlphaWorld Open (string path)
+        public static new AlphaWorld Open (string path, out NbtErrors errors)
         {
-            return new AlphaWorld().OpenWorld(path) as AlphaWorld;
+            return new AlphaWorld().OpenWorld(path, out errors) as AlphaWorld;
         }
 
         /// <summary>
@@ -199,7 +200,7 @@ namespace Substrate
             _blockMgrs[dim] = bm;
         }
 
-        private AlphaWorld OpenWorld (string path)
+        private AlphaWorld OpenWorld (string path, out NbtErrors errors)
         {
             if (!Directory.Exists(path)) {
                 if (File.Exists(path)) {
@@ -207,26 +208,25 @@ namespace Substrate
                     path = IO.Path.GetDirectoryName(path);
                 }
                 else {
-                    throw new DirectoryNotFoundException("Directory '" + path + "' not found");
-                }
-            }
+					errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Directory \"{path}\" not found");
+					return null;
+				}
+			}
 
             Path = path;
 
             string ldat = IO.Path.Combine(path, _levelFile);
             if (!File.Exists(ldat)) {
-                throw new FileNotFoundException("Data file '" + _levelFile + "' not found in '" + path + "'", ldat);
-            }
+				errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Data file \"{_levelFile}\" not found in \"{path}\"");
+				return null;
+			}
 
-			NbtErrors errors = LoadLevel();
-            if (!errors) {
-                throw new Exception("Failed to load '" + _levelFile + "'");
-            }
+			errors = LoadLevel();
 
-            return this;
-        }
+			return !errors.HasErrors ? this : null;
+		}
 
-        private AlphaWorld CreateWorld (string path)
+		private AlphaWorld CreateWorld (string path)
         {
             if (!Directory.Exists(path)) {
                 throw new DirectoryNotFoundException("Directory '" + path + "' not found");
@@ -252,30 +252,38 @@ namespace Substrate
 				tree = new NbtTree(nbtstr);
             }
 
-            _level = new Level(this);
+			int? versionNumber = Level.ExtractVersionNumber(tree.Root);
+			if (!versionNumber.HasValue || versionNumber != 0)
+				return NbtErrors.FromMessage(NbtErrorKind.Error_InvalidVersion, "This world does not use the Alpha file format.");
+
+			_level = new Level(this);
             _level = _level.LoadTreeSafe(tree.Root, out NbtErrors errors);
 
             return errors;
         }
 
+		public static bool TryOpen(string path, out NbtWorld world, out NbtErrors errors, out bool isCorrectVersion)
+		{
+			errors = null;
+			isCorrectVersion = false;
 
-        internal static void OnResolveOpen (object sender, OpenWorldEventArgs e)
-        {
-            try {
-                AlphaWorld world = new AlphaWorld().OpenWorld(e.Path);
-                if (world == null) {
-                    return;
-                }
+			try
+			{
+				world = new AlphaWorld().OpenWorld(path, out errors);
+				isCorrectVersion = !errors.Any(e => e.ErrorKind == NbtErrorKind.Error_InvalidVersion);
+				if (world == null)
+					return false;
 
-                if (world.Level.Version != 0) {
-                    return;
-                }
-
-                e.AddHandler(Open);
-            }
-            catch (Exception) {
-                return;
-            }
-        }
-    }
+				return true;
+			}
+			catch (Exception e)
+			{
+				world = null;
+				errors = errors == null
+					? NbtErrors.FromMessage(NbtErrorKind.Error_Exception, e.Message)
+					: errors.WithError(NbtErrorKind.Error_Exception, e.Message);
+				return false;
+			}
+		}
+	}
 }

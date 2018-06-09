@@ -4,6 +4,7 @@ using System.IO;
 using Substrate.Core;
 using Substrate.Nbt;
 using Substrate.Data;
+using System.Linq;
 
 //TODO: Exceptions (+ Alpha)
 
@@ -200,26 +201,25 @@ namespace Substrate
         }
 
         /// <summary>
-        /// Opens an existing Beta-compatible Minecraft world and returns a new <see cref="BetaWorld"/> to represent it.
+        /// Opens an existing Anvil-compatible Minecraft world and returns a new <see cref="AnvilWorld"/> to represent it.
         /// </summary>
         /// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
         /// <returns>A new <see cref="BetaWorld"/> object representing an existing world on disk.</returns>
-        public static new AnvilWorld Open (string path)
+        public static new AnvilWorld Open(string path, out NbtErrors errors)
         {
-            return new AnvilWorld().OpenWorld(path) as AnvilWorld;
+            return new AnvilWorld().OpenWorld(path, out errors);
         }
 
-        /// <summary>
-        /// Opens an existing Beta-compatible Minecraft world and returns a new <see cref="BetaWorld"/> to represent it.
-        /// </summary>
-        /// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
-        /// <param name="cacheSize">The preferred cache size in chunks for each opened dimension in this world.</param>
-        /// <returns>A new <see cref="BetaWorld"/> object representing an existing world on disk.</returns>
-        public static AnvilWorld Open (string path, int cacheSize)
+		/// <summary>
+		/// Opens an existing Anvil-compatible Minecraft world and returns a new <see cref="BetaWorld"/> to represent it.
+		/// </summary>
+		/// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
+		/// <param name="cacheSize">The preferred cache size in chunks for each opened dimension in this world.</param>
+		/// <returns>A new <see cref="BetaWorld"/> object representing an existing world on disk.</returns>
+		public static AnvilWorld Open(string path, int cacheSize, out NbtErrors errors)
         {
-            AnvilWorld world = new AnvilWorld().OpenWorld(path);
+            AnvilWorld world = new AnvilWorld().OpenWorld(path, out errors);
             world._prefCacheSize = cacheSize;
-
             return world;
         }
 
@@ -299,7 +299,7 @@ namespace Substrate
         }
 
         /// <exclude/>
-        protected override Data.DataManager GetDataManagerVirt ()
+        protected override DataManager GetDataManagerVirt ()
         {
             if (_dataMan != null) {
                 return _dataMan;
@@ -345,15 +345,16 @@ namespace Substrate
             _caches[dim] = cc;
         }
 
-        private AnvilWorld OpenWorld (string path)
+        private AnvilWorld OpenWorld (string path, out NbtErrors errors)
         {
             if (!Directory.Exists(path)) {
-                if (File.Exists(path)) {
-                    _levelFile = IO.Path.GetFileName(path);
-                    path = IO.Path.GetDirectoryName(path);
-                }
-                else {
-                    throw new DirectoryNotFoundException("Directory '" + path + "' not found");
+				if (File.Exists(path)) {
+					_levelFile = IO.Path.GetFileName(path);
+					path = IO.Path.GetDirectoryName(path);
+				}
+				else {
+					errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Directory \"{path}\" not found");
+					return null;
                 }
             }
 
@@ -361,15 +362,13 @@ namespace Substrate
 
             string ldat = IO.Path.Combine(path, _levelFile);
             if (!File.Exists(ldat)) {
-                throw new FileNotFoundException("Data file '" + _levelFile + "' not found in '" + path + "'", ldat);
+				errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Data file \"{_levelFile}\" not found in \"{path}\"");
+				return null;
             }
 
-			NbtErrors errors = LoadLevel();
-            if (!errors) {
-                throw new Exception("Failed to load '" + _levelFile + "'");
-            }
+			errors = LoadLevel();
 
-            return this;
+			return !errors.HasErrors ? this : null;
         }
 
         private AnvilWorld CreateWorld (string path)
@@ -402,33 +401,41 @@ namespace Substrate
                 tree = new NbtTree(nbtstr);
             }
 
-            _level = new Level(this);
+			int? versionNumber = Level.ExtractVersionNumber(tree.Root);
+			if (!versionNumber.HasValue || versionNumber != 19133)
+				return NbtErrors.FromMessage(NbtErrorKind.Error_InvalidVersion, "This world does not use the Anvil file format.");
+
+			_level = new Level(this);
             _level = _level.LoadTreeSafe(tree.Root, out NbtErrors errors);
 
             return errors;
         }
 
-        internal static void OnResolveOpen (object sender, OpenWorldEventArgs e)
+        public static bool TryOpen(string path, out NbtWorld world, out NbtErrors errors, out bool isCorrectVersion)
         {
-            try {
-                AnvilWorld world = new AnvilWorld().OpenWorld(e.Path);
-                if (world == null) {
-                    return;
-                }
+			errors = null;
+			isCorrectVersion = false;
 
-                string regPath = IO.Path.Combine(e.Path, _REGION_DIR);
+			try {
+                world = new AnvilWorld().OpenWorld(path, out errors);
+				isCorrectVersion = !errors.Any(e => e.ErrorKind == NbtErrorKind.Error_InvalidVersion);
+                if (world == null)
+                    return false;
+
+                string regPath = IO.Path.Combine(path, _REGION_DIR);
                 if (!Directory.Exists(regPath)) {
-                    return;
+					errors = errors.WithError(NbtErrorKind.Error_IOError, $"Directory {_REGION_DIR} does not exist.");
+                    return false;
                 }
 
-                if (world.Level.Version < 19133) {
-                    return;
-                }
-
-                e.AddHandler(Open);
+				return true;
             }
-            catch (Exception) {
-                return;
+            catch (Exception e) {
+				world = null;
+				errors = errors == null
+					? NbtErrors.FromMessage(NbtErrorKind.Error_Exception, e.Message)
+					: errors.WithError(NbtErrorKind.Error_Exception, e.Message);
+                return false;
             }
         }
     }

@@ -4,6 +4,7 @@ using System.IO;
 using Substrate.Core;
 using Substrate.Nbt;
 using Substrate.Data;
+using System.Linq;
 
 //TODO: Exceptions (+ Alpha)
 
@@ -201,9 +202,9 @@ namespace Substrate
         /// </summary>
         /// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
         /// <returns>A new <see cref="BetaWorld"/> object representing an existing world on disk.</returns>
-        public static new BetaWorld Open (string path)
+        public static new BetaWorld Open (string path, out NbtErrors errors)
         {
-            return new BetaWorld().OpenWorld(path) as BetaWorld;
+            return new BetaWorld().OpenWorld(path, out errors) as BetaWorld;
         }
 
         /// <summary>
@@ -212,9 +213,9 @@ namespace Substrate
         /// <param name="path">The path to the directory containing the world's level.dat, or the path to level.dat itself.</param>
         /// <param name="cacheSize">The preferred cache size in chunks for each opened dimension in this world.</param>
         /// <returns>A new <see cref="BetaWorld"/> object representing an existing world on disk.</returns>
-        public static BetaWorld Open (string path, int cacheSize)
+        public static BetaWorld Open (string path, int cacheSize, out NbtErrors errors)
         {
-            BetaWorld world = new BetaWorld().OpenWorld(path);
+            BetaWorld world = new BetaWorld().OpenWorld(path, out errors);
             world._prefCacheSize = cacheSize;
 
             return world;
@@ -342,7 +343,7 @@ namespace Substrate
             _caches[dim] = cc;
         }
 
-        private BetaWorld OpenWorld (string path)
+        private BetaWorld OpenWorld (string path, out NbtErrors errors)
         {
             if (!Directory.Exists(path)) {
                 if (File.Exists(path)) {
@@ -350,24 +351,23 @@ namespace Substrate
                     path = IO.Path.GetDirectoryName(path);
                 }
                 else {
-                    throw new DirectoryNotFoundException("Directory '" + path + "' not found");
-                }
-            }
+					errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Directory \"{path}\" not found");
+					return null;
+				}
+			}
 
             Path = path;
 
             string ldat = IO.Path.Combine(path, _levelFile);
             if (!File.Exists(ldat)) {
-                throw new FileNotFoundException("Data file '" + _levelFile + "' not found in '" + path + "'", ldat);
-            }
+				errors = NbtErrors.FromMessage(NbtErrorKind.Error_IOError, $"Data file \"{_levelFile}\" not found in \"{path}\"");
+				return null;
+			}
 
-			NbtErrors errors = LoadLevel();
-            if (!errors) {
-                throw new Exception("Failed to load '" + _levelFile + "'");
-            }
+			errors = LoadLevel();
 
-            return this;
-        }
+			return !errors.HasErrors ? this : null;
+		}
 
         private BetaWorld CreateWorld (string path)
         {
@@ -400,34 +400,45 @@ namespace Substrate
 				tree = new NbtTree(nbtstr);
             }
 
-            _level = new Level(this);
+			int? versionNumber = Level.ExtractVersionNumber(tree.Root);
+			if (!versionNumber.HasValue || versionNumber != 19132)
+				return NbtErrors.FromMessage(NbtErrorKind.Error_InvalidVersion, "This world does not use the Beta file format.");
+
+			_level = new Level(this);
             _level = _level.LoadTreeSafe(tree.Root, out NbtErrors errors);
 
             return errors;
         }
 
-        internal static void OnResolveOpen (object sender, OpenWorldEventArgs e)
-        {
-            try {
-                BetaWorld world = new BetaWorld().OpenWorld(e.Path);
-                if (world == null) {
-                    return;
-                }
+		public static bool TryOpen(string path, out NbtWorld world, out NbtErrors errors, out bool isCorrectVersion)
+		{
+			errors = null;
+			isCorrectVersion = false;
 
-                string regPath = IO.Path.Combine(e.Path, _REGION_DIR);
-                if (!Directory.Exists(regPath)) {
-                    return;
-                }
+			try
+			{
+				world = new BetaWorld().OpenWorld(path, out errors);
+				isCorrectVersion = !errors.Any(e => e.ErrorKind == NbtErrorKind.Error_InvalidVersion);
+				if (world == null)
+					return false;
 
-                if (world.Level.Version != 19132) {
-                    return;
-                }
+				string regPath = IO.Path.Combine(path, _REGION_DIR);
+				if (!Directory.Exists(regPath))
+				{
+					errors = errors.WithError(NbtErrorKind.Error_IOError, $"Directory {_REGION_DIR} does not exist.");
+					return false;
+				}
 
-                e.AddHandler(Open);
-            }
-            catch (Exception) {
-                return;
-            }
-        }
-    }
+				return true;
+			}
+			catch (Exception e)
+			{
+				world = null;
+				errors = errors == null
+					? NbtErrors.FromMessage(NbtErrorKind.Error_Exception, e.Message)
+					: errors.WithError(NbtErrorKind.Error_Exception, e.Message);
+				return false;
+			}
+		}
+	}
 }

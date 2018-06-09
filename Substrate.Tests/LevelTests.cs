@@ -130,7 +130,7 @@ namespace Substrate.Tests
                 Assert.Inconclusive("Level not found, skipping test");
             }
 
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\Climatic Islands [ENG]\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\Climatic Islands [ENG]\", out NbtErrors errors);
             Assert.IsNotNull(world);
 
             NbtTree villagesNetherTree = LoadLevelTree(@"..\..\Data\Climatic Islands [ENG]\level.dat");

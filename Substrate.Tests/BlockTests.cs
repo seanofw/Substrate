@@ -4,6 +4,8 @@ using System.Text;
 using Substrate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
+using Substrate.Nbt;
+
 namespace Substrate.Tests
 {
     [TestClass]
@@ -21,7 +23,7 @@ namespace Substrate.Tests
         [TestMethod]
         public void BlockTest_1_8_3_debug()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_3-debug\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_8_3-debug\", out NbtErrors errors);
             Assert.IsNotNull(world);
 
             for (int x = DebugWorld.MinX; x < DebugWorld.MaxX; x += 2)
@@ -42,7 +44,7 @@ namespace Substrate.Tests
         [TestMethod]
         public void BlockTest_1_9_2_debug()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_9_2-debug\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_9_2-debug\", out NbtErrors errors);
             Assert.IsNotNull(world);
 
             bool dataError = false;
@@ -71,7 +73,7 @@ namespace Substrate.Tests
         [TestMethod]
         public void BlockTest_1_12_2_debug()
         {
-            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_12_2-debug\");
+            NbtWorld world = NbtWorld.Open(@"..\..\Data\1_12_2-debug\", out NbtErrors nbtErrors);
             Assert.IsNotNull(world);
 
             var sb = new StringBuilder();

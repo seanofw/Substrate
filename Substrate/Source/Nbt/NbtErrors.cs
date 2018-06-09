@@ -32,6 +32,20 @@ namespace Substrate.Nbt
 				: new NbtErrors(errorCollection, new NbtError[0]);
 		}
 
+		public NbtErrors WithError(NbtErrorKind errorKind, string message)
+		{
+			List<NbtError> errors = Errors.ToList();
+			errors.Add(new NbtError(new string[0], errorKind, message));
+			return new NbtErrors(errors, Warnings);
+		}
+
+		public NbtErrors WithWarning(NbtErrorKind errorKind, string message)
+		{
+			List<NbtError> warnings = Warnings.ToList();
+			warnings.Add(new NbtError(new string[0], errorKind, message));
+			return new NbtErrors(warnings, Errors);
+		}
+
 		public static implicit operator bool(NbtErrors results)
 		{
 			return results.Success;
